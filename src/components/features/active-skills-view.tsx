@@ -1,8 +1,72 @@
-import { Archive, CheckCircle2, Trash2 } from "lucide-react";
+import { Archive, CheckCircle2, Trash2, Trophy } from "lucide-react";
 import { useState } from "react";
 import { useSkillStore } from "../../stores/skill-store";
 import type { ActiveSkill } from "../../types/skill";
 import { ConfirmDialog } from "../common/confirm-dialog";
+
+type Rank = "入門" | "初級" | "中級" | "上級" | "達人" | "伝説";
+
+function getRank(p: number): Rank {
+  if (p === 100) return "伝説";
+  if (p >= 80) return "達人";
+  if (p >= 60) return "上級";
+  if (p >= 40) return "中級";
+  if (p >= 20) return "初級";
+  return "入門";
+}
+
+function getRankStyles(rank: Rank) {
+  switch (rank) {
+    case "伝説":
+      return {
+        border: "border-amber-500",
+        shadow: "shadow-lg shadow-amber-500/20",
+        badge:
+          "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+        slider: "accent-amber-500",
+      };
+    case "達人":
+      return {
+        border: "border-orange-500",
+        shadow: "shadow-md shadow-orange-500/10",
+        badge:
+          "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
+        slider: "accent-orange-500",
+      };
+    case "上級":
+      return {
+        border: "border-purple-500",
+        shadow: "shadow-md shadow-purple-500/10",
+        badge:
+          "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
+        slider: "accent-purple-500",
+      };
+    case "中級":
+      return {
+        border: "border-blue-500",
+        shadow: "shadow-sm shadow-blue-500/10",
+        badge:
+          "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+        slider: "accent-blue-500",
+      };
+    case "初級":
+      return {
+        border: "border-green-500",
+        shadow: "shadow-sm shadow-green-500/10",
+        badge:
+          "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+        slider: "accent-green-500",
+      };
+
+    default:
+      return {
+        border: "border-border",
+        shadow: "shadow-sm",
+        badge: "bg-muted text-muted-foreground",
+        slider: "accent-primary",
+      };
+  }
+}
 
 export function ActiveSkillsView() {
   const { activeSkills, updateActiveSkill, moveToBacklog, deleteActiveSkill } =
@@ -92,11 +156,26 @@ function SkillCard({
   onDelete,
   onMaster,
 }: SkillCardProps) {
+  const rank = getRank(skill.proficiency);
+  const styles = getRankStyles(rank);
+
   return (
-    <div className="rounded-xl border border-border bg-card shadow-sm flex flex-col overflow-hidden">
+    <div
+      className={`rounded-xl border bg-card flex flex-col overflow-hidden transition-all duration-300 ${styles.border} ${styles.shadow}`}
+    >
       <div className="p-4 border-b border-border bg-muted/30">
         <div className="flex items-start justify-between gap-2">
-          <h3 className="font-semibold text-lg leading-tight">{skill.title}</h3>
+          <div className="space-y-1">
+            <h3 className="font-semibold text-lg leading-tight">
+              {skill.title}
+            </h3>
+            <span
+              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${styles.badge}`}
+            >
+              {rank === "伝説" && <Trophy className="w-3 h-3" />}
+              {rank}
+            </span>
+          </div>
           <div className="flex -mr-2 -mt-2">
             <button
               type="button"
@@ -172,7 +251,7 @@ function SkillCard({
             onChange={(e) =>
               onUpdate(skill.id, { proficiency: Number(e.target.value) })
             }
-            className="w-full accent-primary h-2 bg-secondary rounded-lg appearance-none cursor-pointer"
+            className={`w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer ${styles.slider}`}
           />
         </div>
       </div>
