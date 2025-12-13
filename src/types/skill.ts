@@ -12,3 +12,7 @@ export interface ActiveSkill {
   proficiency: number; // 0 to 100
   startedAt: number;
 }
+
+export interface HistoryItem extends ActiveSkill {
+  completedAt: number;
+}

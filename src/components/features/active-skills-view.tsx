@@ -69,8 +69,13 @@ function getRankStyles(rank: Rank) {
 }
 
 export function ActiveSkillsView() {
-  const { activeSkills, updateActiveSkill, moveToBacklog, deleteActiveSkill } =
-    useSkillStore();
+  const {
+    activeSkills,
+    updateActiveSkill,
+    moveToBacklog,
+    moveToHistory,
+    deleteActiveSkill,
+  } = useSkillStore();
   const [confirmState, setConfirmState] = useState<{
     isOpen: boolean;
     itemId: string | null;
@@ -87,6 +92,8 @@ export function ActiveSkillsView() {
         deleteActiveSkill(confirmState.itemId);
       } else if (confirmState.type === "backlog") {
         moveToBacklog(confirmState.itemId);
+      } else if (confirmState.type === "master") {
+        moveToHistory(confirmState.itemId);
       }
       setConfirmState({ isOpen: false, itemId: null, type: null });
     }
@@ -141,7 +148,7 @@ export function ActiveSkillsView() {
         }
         message={
           confirmState.type === "master"
-            ? "このスキルを習得完了にしますか？（リストから削除されます）"
+            ? "このスキルを習得完了にしますか？（習得済みリストに移動します）"
             : confirmState.type === "backlog"
               ? "このスキルをやりたいことリストに戻しますか？"
               : "このスキルを習得中リストから削除しますか？"

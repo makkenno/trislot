@@ -20,10 +20,10 @@ export function AppShell({ children }: AppShellProps) {
             <button
               type="button"
               onClick={() => setMode("active")}
-              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 mode === "active"
-                  ? "bg-background shadow-sm text-foreground"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:bg-muted"
               }`}
             >
               習得中
@@ -31,13 +31,24 @@ export function AppShell({ children }: AppShellProps) {
             <button
               type="button"
               onClick={() => setMode("backlog")}
-              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 mode === "backlog"
-                  ? "bg-background shadow-sm text-foreground"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:bg-muted"
               }`}
             >
               やりたいこと
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode("history")}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                mode === "history"
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:bg-muted"
+              }`}
+            >
+              習得済み
             </button>
           </nav>
         </div>

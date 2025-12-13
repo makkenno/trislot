@@ -1,20 +1,23 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import { indexedDBStorage } from "../lib/indexeddb-storage";
-import type { ActiveSkill, BacklogItem } from "../types/skill";
+import type { ActiveSkill, BacklogItem, HistoryItem } from "../types/skill";
 
 interface SkillState {
-  mode: "backlog" | "active";
+  mode: "backlog" | "active" | "history";
   backlog: BacklogItem[];
   activeSkills: ActiveSkill[];
+  history: HistoryItem[];
 
-  setMode: (mode: "backlog" | "active") => void;
+  setMode: (mode: "backlog" | "active" | "history") => void;
   addBacklogItem: (title: string) => void;
   moveToActive: (itemId: string) => void;
   moveToBacklog: (skillId: string) => void;
+  moveToHistory: (skillId: string) => void;
   updateActiveSkill: (id: string, updates: Partial<ActiveSkill>) => void;
   deleteBacklogItem: (id: string) => void;
   deleteActiveSkill: (id: string) => void;
+  deleteHistoryItem: (id: string) => void;
 }
 
 export const useSkillStore = create<SkillState>()(
@@ -23,6 +26,7 @@ export const useSkillStore = create<SkillState>()(
       mode: "active",
       backlog: [],
       activeSkills: [],
+      history: [],
 
       setMode: (mode) => set({ mode }),
 
@@ -38,8 +42,6 @@ export const useSkillStore = create<SkillState>()(
       moveToActive: (itemId) => {
         const { backlog, activeSkills } = get();
         if (activeSkills.length >= 3) {
-          // Ideally invoke a toast or error here, handled by UI logic usually
-          // For now, we simply return
           console.warn("Cannot have more than 3 active skills.");
           return;
         }
@@ -70,12 +72,29 @@ export const useSkillStore = create<SkillState>()(
         const newItem: BacklogItem = {
           id: skill.id,
           title: skill.title,
-          createdAt: Date.now(), // Reset date or keep original? Keeping new date for sort order at top
+          createdAt: Date.now(),
         };
 
         set((state) => ({
           activeSkills: state.activeSkills.filter((s) => s.id !== skillId),
           backlog: [newItem, ...state.backlog],
+        }));
+      },
+
+      moveToHistory: (skillId) => {
+        const { activeSkills } = get();
+        const skill = activeSkills.find((s) => s.id === skillId);
+        if (!skill) return;
+
+        const historyItem: HistoryItem = {
+          ...skill,
+          completedAt: Date.now(),
+          proficiency: 100, // Ensure it's marked as complete
+        };
+
+        set((state) => ({
+          activeSkills: state.activeSkills.filter((s) => s.id !== skillId),
+          history: [historyItem, ...state.history],
         }));
       },
 
@@ -96,6 +115,12 @@ export const useSkillStore = create<SkillState>()(
       deleteActiveSkill: (id) => {
         set((state) => ({
           activeSkills: state.activeSkills.filter((s) => s.id !== id),
+        }));
+      },
+
+      deleteHistoryItem: (id) => {
+        set((state) => ({
+          history: state.history.filter((i) => i.id !== id),
         }));
       },
     }),
