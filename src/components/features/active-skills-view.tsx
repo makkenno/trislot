@@ -74,7 +74,7 @@ export function ActiveSkillsView() {
   const [confirmState, setConfirmState] = useState<{
     isOpen: boolean;
     itemId: string | null;
-    type: "delete" | "master" | null;
+    type: "delete" | "master" | "backlog" | null;
   }>({
     isOpen: false,
     itemId: null,
@@ -83,7 +83,11 @@ export function ActiveSkillsView() {
 
   const handleConfirm = () => {
     if (confirmState.itemId && confirmState.type) {
-      deleteActiveSkill(confirmState.itemId);
+      if (confirmState.type === "delete") {
+        deleteActiveSkill(confirmState.itemId);
+      } else if (confirmState.type === "backlog") {
+        moveToBacklog(confirmState.itemId);
+      }
       setConfirmState({ isOpen: false, itemId: null, type: null });
     }
   };
@@ -112,7 +116,9 @@ export function ActiveSkillsView() {
               key={skill.id}
               skill={skill}
               onUpdate={updateActiveSkill}
-              onMoveToBacklog={moveToBacklog}
+              onMoveToBacklog={(id) =>
+                setConfirmState({ isOpen: true, itemId: id, type: "backlog" })
+              }
               onDelete={(id) =>
                 setConfirmState({ isOpen: true, itemId: id, type: "delete" })
               }
@@ -126,13 +132,27 @@ export function ActiveSkillsView() {
 
       <ConfirmDialog
         isOpen={confirmState.isOpen}
-        title={confirmState.type === "master" ? "習得完了の確認" : "削除の確認"}
+        title={
+          confirmState.type === "master"
+            ? "習得完了の確認"
+            : confirmState.type === "backlog"
+              ? "リストに戻す"
+              : "削除の確認"
+        }
         message={
           confirmState.type === "master"
             ? "このスキルを習得完了にしますか？（リストから削除されます）"
-            : "このスキルを習得中リストから削除しますか？"
+            : confirmState.type === "backlog"
+              ? "このスキルをやりたいことリストに戻しますか？"
+              : "このスキルを習得中リストから削除しますか？"
         }
-        confirmLabel={confirmState.type === "master" ? "完了" : "削除"}
+        confirmLabel={
+          confirmState.type === "master"
+            ? "完了"
+            : confirmState.type === "backlog"
+              ? "戻す"
+              : "削除"
+        }
         isDestructive={confirmState.type === "delete"}
         onConfirm={handleConfirm}
         onCancel={handleCancel}
