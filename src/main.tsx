@@ -1,6 +1,20 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./style.css";
+import { ActiveSkillsView } from "./components/features/active-skills-view";
+import { BacklogView } from "./components/features/backlog-view";
+import { AppShell } from "./components/layout/app-shell";
+import { useSkillStore } from "./stores/skill-store";
+
+function App() {
+  const { mode } = useSkillStore();
+
+  return (
+    <AppShell>
+      {mode === "active" ? <ActiveSkillsView /> : <BacklogView />}
+    </AppShell>
+  );
+}
 
 const root = document.getElementById("root");
 
@@ -10,8 +24,6 @@ if (!root) {
 
 createRoot(root).render(
   <StrictMode>
-    <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
-      <h1 className="text-4xl font-bold">Trislot Initialized</h1>
-    </div>
+    <App />
   </StrictMode>,
 );
