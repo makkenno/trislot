@@ -253,6 +253,11 @@ function SkillCard({
             }
             className={`w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer ${styles.slider}`}
           />
+          <div className="flex justify-between text-[10px] text-muted-foreground px-1 mt-1">
+            <span>0: 意識してもできない</span>
+            <span className="text-center">50: 意識すればできる</span>
+            <span>100: 無意識でできる</span>
+          </div>
         </div>
       </div>
 
