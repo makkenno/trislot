@@ -1,10 +1,32 @@
 import { Archive, CheckCircle2, Trash2 } from "lucide-react";
+import { useState } from "react";
 import { useSkillStore } from "../../stores/skill-store";
 import type { ActiveSkill } from "../../types/skill";
+import { ConfirmDialog } from "../common/confirm-dialog";
 
 export function ActiveSkillsView() {
   const { activeSkills, updateActiveSkill, moveToBacklog, deleteActiveSkill } =
     useSkillStore();
+  const [confirmState, setConfirmState] = useState<{
+    isOpen: boolean;
+    itemId: string | null;
+    type: "delete" | "master" | null;
+  }>({
+    isOpen: false,
+    itemId: null,
+    type: null,
+  });
+
+  const handleConfirm = () => {
+    if (confirmState.itemId && confirmState.type) {
+      deleteActiveSkill(confirmState.itemId);
+      setConfirmState({ isOpen: false, itemId: null, type: null });
+    }
+  };
+
+  const handleCancel = () => {
+    setConfirmState({ isOpen: false, itemId: null, type: null });
+  };
 
   return (
     <div className="space-y-6">
@@ -27,11 +49,30 @@ export function ActiveSkillsView() {
               skill={skill}
               onUpdate={updateActiveSkill}
               onMoveToBacklog={moveToBacklog}
-              onDelete={deleteActiveSkill}
+              onDelete={(id) =>
+                setConfirmState({ isOpen: true, itemId: id, type: "delete" })
+              }
+              onMaster={(id) =>
+                setConfirmState({ isOpen: true, itemId: id, type: "master" })
+              }
             />
           ))
         )}
       </div>
+
+      <ConfirmDialog
+        isOpen={confirmState.isOpen}
+        title={confirmState.type === "master" ? "習得完了の確認" : "削除の確認"}
+        message={
+          confirmState.type === "master"
+            ? "このスキルを習得完了にしますか？（リストから削除されます）"
+            : "このスキルを習得中リストから削除しますか？"
+        }
+        confirmLabel={confirmState.type === "master" ? "完了" : "削除"}
+        isDestructive={confirmState.type === "delete"}
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+      />
     </div>
   );
 }
@@ -41,6 +82,7 @@ interface SkillCardProps {
   onUpdate: (id: string, updates: Partial<ActiveSkill>) => void;
   onMoveToBacklog: (id: string) => void;
   onDelete: (id: string) => void;
+  onMaster: (id: string) => void;
 }
 
 function SkillCard({
@@ -48,6 +90,7 @@ function SkillCard({
   onUpdate,
   onMoveToBacklog,
   onDelete,
+  onMaster,
 }: SkillCardProps) {
   return (
     <div className="rounded-xl border border-border bg-card shadow-sm flex flex-col overflow-hidden">
@@ -137,16 +180,7 @@ function SkillCard({
       <div className="p-3 bg-muted/20 border-t border-border flex justify-end">
         <button
           type="button"
-          onClick={() => {
-            // Ideally this would "archive" or "graduate", but delete for now is fine per requirements
-            if (
-              confirm(
-                "このスキルを習得完了にしますか？（リストから削除されます）",
-              )
-            ) {
-              onDelete(skill.id);
-            }
-          }}
+          onClick={() => onMaster(skill.id)}
           className="text-sm font-medium text-primary hover:underline flex items-center gap-1.5"
         >
           <CheckCircle2 className="w-4 h-4" />

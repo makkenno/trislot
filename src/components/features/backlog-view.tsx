@@ -1,6 +1,7 @@
 import { ArrowUpRight, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useSkillStore } from "../../stores/skill-store";
+import { ConfirmDialog } from "../common/confirm-dialog";
 
 export function BacklogView() {
   const {
@@ -11,6 +12,7 @@ export function BacklogView() {
     activeSkills,
   } = useSkillStore();
   const [newItemTitle, setNewItemTitle] = useState("");
+  const [itemToDelete, setItemToDelete] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,7 +64,7 @@ export function BacklogView() {
               <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  onClick={() => deleteBacklogItem(item.id)}
+                  onClick={() => setItemToDelete(item.id)}
                   className="p-2 text-muted-foreground hover:text-destructive transition-colors"
                   title="削除"
                 >
@@ -87,6 +89,20 @@ export function BacklogView() {
           ))
         )}
       </div>
+      <ConfirmDialog
+        isOpen={!!itemToDelete}
+        title="削除の確認"
+        message="この項目をやりたいことリストから削除しますか？"
+        confirmLabel="削除"
+        isDestructive
+        onConfirm={() => {
+          if (itemToDelete) {
+            deleteBacklogItem(itemToDelete);
+            setItemToDelete(null);
+          }
+        }}
+        onCancel={() => setItemToDelete(null)}
+      />
     </div>
   );
 }
