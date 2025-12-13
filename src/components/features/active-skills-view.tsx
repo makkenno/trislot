@@ -19,51 +19,45 @@ function getRankStyles(rank: Rank) {
   switch (rank) {
     case "伝説":
       return {
-        border: "border-amber-500",
-        shadow: "shadow-lg shadow-amber-500/20",
-        badge:
-          "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
-        slider: "accent-amber-500",
+        border: "border-blue-900",
+        shadow: "shadow-lg shadow-blue-900/20",
+        badge: "bg-blue-900 text-blue-50 dark:bg-blue-900 dark:text-blue-50",
+        slider: "accent-blue-900",
       };
     case "達人":
       return {
-        border: "border-orange-500",
-        shadow: "shadow-md shadow-orange-500/10",
-        badge:
-          "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
-        slider: "accent-orange-500",
+        border: "border-blue-700",
+        shadow: "shadow-md shadow-blue-700/10",
+        badge: "bg-blue-700 text-blue-50 dark:bg-blue-700 dark:text-blue-50",
+        slider: "accent-blue-700",
       };
     case "上級":
       return {
-        border: "border-purple-500",
-        shadow: "shadow-md shadow-purple-500/10",
-        badge:
-          "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
-        slider: "accent-purple-500",
+        border: "border-blue-600",
+        shadow: "shadow-md shadow-blue-600/10",
+        badge: "bg-blue-600 text-blue-50 dark:bg-blue-600 dark:text-blue-50",
+        slider: "accent-blue-600",
       };
     case "中級":
       return {
         border: "border-blue-500",
         shadow: "shadow-sm shadow-blue-500/10",
-        badge:
-          "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+        badge: "bg-blue-500 text-blue-50 dark:bg-blue-500 dark:text-blue-50",
         slider: "accent-blue-500",
       };
     case "初級":
       return {
-        border: "border-green-500",
-        shadow: "shadow-sm shadow-green-500/10",
-        badge:
-          "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-        slider: "accent-green-500",
+        border: "border-blue-400",
+        shadow: "shadow-sm shadow-blue-400/10",
+        badge: "bg-blue-400 text-white dark:bg-blue-400 dark:text-white",
+        slider: "accent-blue-400",
       };
-
     default:
       return {
-        border: "border-border",
+        border: "border-blue-200",
         shadow: "shadow-sm",
-        badge: "bg-muted text-muted-foreground",
-        slider: "accent-primary",
+        badge: "bg-blue-100 text-blue-700",
+        slider: "accent-blue-200",
       };
   }
 }
@@ -189,21 +183,36 @@ function SkillCard({
   const getProgressColor = (r: Rank) => {
     switch (r) {
       case "伝説":
-        return "#f59e0b"; // amber-500
+        return "#1e3a8a"; // blue-900
       case "達人":
-        return "#f97316"; // orange-500
+        return "#1d4ed8"; // blue-700
       case "上級":
-        return "#a855f7"; // purple-500
+        return "#2563eb"; // blue-600
       case "中級":
         return "#3b82f6"; // blue-500
       case "初級":
-        return "#22c55e"; // green-500
+        return "#60a5fa"; // blue-400
       default:
-        return "#71717a"; // zinc-500 (muted)
+        return "#bfdbfe"; // blue-200
+    }
+  };
+
+  const getTrackColor = (r: Rank) => {
+    switch (r) {
+      case "伝説":
+      case "達人":
+      case "上級":
+        return "#dbeafe"; // blue-100
+      case "中級":
+      case "初級":
+        return "#eff6ff"; // blue-50
+      default:
+        return "#f0f9ff"; // sky-50
     }
   };
 
   const progressColor = getProgressColor(rank);
+  const trackColor = getTrackColor(rank);
 
   return (
     <div
@@ -290,7 +299,10 @@ function SkillCard({
           </div>
           <div className="relative w-full h-5 flex items-center select-none touch-none">
             {/* Track Background */}
-            <div className="absolute w-full h-2 bg-secondary rounded-full overflow-hidden">
+            <div
+              className="absolute w-full h-2 rounded-full overflow-hidden"
+              style={{ backgroundColor: trackColor }}
+            >
               {/* Progress Fill */}
               <div
                 className="h-full transition-all duration-300 ease-out"
