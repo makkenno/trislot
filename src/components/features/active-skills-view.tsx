@@ -186,6 +186,25 @@ function SkillCard({
   const rank = getRank(skill.proficiency);
   const styles = getRankStyles(rank);
 
+  const getProgressColor = (r: Rank) => {
+    switch (r) {
+      case "伝説":
+        return "#f59e0b"; // amber-500
+      case "達人":
+        return "#f97316"; // orange-500
+      case "上級":
+        return "#a855f7"; // purple-500
+      case "中級":
+        return "#3b82f6"; // blue-500
+      case "初級":
+        return "#22c55e"; // green-500
+      default:
+        return "#71717a"; // zinc-500 (muted)
+    }
+  };
+
+  const progressColor = getProgressColor(rank);
+
   return (
     <div
       className={`rounded-xl border bg-card flex flex-col overflow-hidden transition-all duration-300 ${styles.border} ${styles.shadow}`}
@@ -269,17 +288,48 @@ function SkillCard({
             </label>
             <span className="text-xs font-bold">{skill.proficiency}%</span>
           </div>
-          <input
-            id={`proficiency-${skill.id}`}
-            type="range"
-            min="0"
-            max="100"
-            value={skill.proficiency}
-            onChange={(e) =>
-              onUpdate(skill.id, { proficiency: Number(e.target.value) })
-            }
-            className={`w-full h-2 bg-secondary rounded-lg appearance-none cursor-pointer ${styles.slider}`}
-          />
+          <div className="relative w-full h-5 flex items-center select-none touch-none">
+            {/* Track Background */}
+            <div className="absolute w-full h-2 bg-secondary rounded-full overflow-hidden">
+              {/* Progress Fill */}
+              <div
+                className="h-full transition-all duration-300 ease-out"
+                style={{
+                  width: `${skill.proficiency}%`,
+                  backgroundColor: progressColor,
+                }}
+              />
+            </div>
+
+            {/* Thumb */}
+            <div
+              className={`absolute h-5 w-5 bg-background border-2 rounded-full shadow-sm transition-transform hover:scale-110 flex items-center justify-center`}
+              style={{
+                left: `${skill.proficiency}%`,
+                transform: "translateX(-50%)",
+                borderColor: progressColor,
+              }}
+            >
+              <div
+                className="w-1.5 h-1.5 rounded-full"
+                style={{ backgroundColor: progressColor }}
+              />
+            </div>
+
+            {/* Invisible Input for Interaction */}
+            <input
+              id={`proficiency-${skill.id}`}
+              type="range"
+              min="0"
+              max="100"
+              value={skill.proficiency}
+              onChange={(e) =>
+                onUpdate(skill.id, { proficiency: Number(e.target.value) })
+              }
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+              aria-label="習得度"
+            />
+          </div>
           <div className="flex justify-between text-[10px] text-muted-foreground px-1 mt-1">
             <span>0: 意識してもできない</span>
             <span className="text-center">50: 意識すればできる</span>
