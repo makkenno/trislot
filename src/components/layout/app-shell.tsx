@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Zap, ListTodo, CheckCircle2 } from "lucide-react";
 import { useSkillStore } from "../../stores/skill-store";
 
 interface AppShellProps {
@@ -14,41 +15,47 @@ export function AppShell({ children }: AppShellProps) {
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
             <img src="/favicon.png?v=2" alt="Trislot" className="w-8 h-8" />
-            <h1 className="text-xl font-bold">Trislot</h1>
+            <h1 className="text-xl font-bold hidden md:block">Trislot</h1>
           </div>
           <nav className="flex bg-muted p-1 rounded-lg">
             <button
               type="button"
               onClick={() => setMode("active")}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+              className={`px-3 md:px-4 py-2 rounded-full text-sm font-medium transition-colors flex items-center gap-2 ${
                 mode === "active"
                   ? "bg-primary text-primary-foreground shadow-sm"
                   : "text-muted-foreground hover:bg-muted"
               }`}
+              aria-label="習得中"
             >
-              習得中
+              <Zap className="w-4 h-4" />
+              <span className="hidden md:inline">習得中</span>
             </button>
             <button
               type="button"
               onClick={() => setMode("backlog")}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+              className={`px-3 md:px-4 py-2 rounded-full text-sm font-medium transition-colors flex items-center gap-2 ${
                 mode === "backlog"
                   ? "bg-primary text-primary-foreground shadow-sm"
                   : "text-muted-foreground hover:bg-muted"
               }`}
+              aria-label="やりたいこと"
             >
-              やりたいこと
+              <ListTodo className="w-4 h-4" />
+              <span className="hidden md:inline">やりたいこと</span>
             </button>
             <button
               type="button"
               onClick={() => setMode("history")}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+              className={`px-3 md:px-4 py-2 rounded-full text-sm font-medium transition-colors flex items-center gap-2 ${
                 mode === "history"
                   ? "bg-primary text-primary-foreground shadow-sm"
                   : "text-muted-foreground hover:bg-muted"
               }`}
+              aria-label="習得済み"
             >
-              習得済み
+              <CheckCircle2 className="w-4 h-4" />
+              <span className="hidden md:inline">習得済み</span>
             </button>
           </nav>
         </div>
