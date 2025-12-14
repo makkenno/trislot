@@ -13,7 +13,7 @@ export function AppShell({ children }: AppShellProps) {
       <header className="border-b border-border p-4 bg-card">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <img src="/favicon.png" alt="Trislot" className="w-8 h-8" />
+            <img src="/favicon.png?v=2" alt="Trislot" className="w-8 h-8" />
             <h1 className="text-xl font-bold">Trislot</h1>
           </div>
           <nav className="flex bg-muted p-1 rounded-lg">
