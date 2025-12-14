@@ -266,7 +266,7 @@ function SkillCard({
             onChange={(e) => onUpdate(skill.id, { context: e.target.value })}
             placeholder="例: 質問をする時..."
             rows={2}
-            className="w-full text-sm px-3 py-2 rounded-md bg-input border border-border focus:outline-none focus:ring-1 focus:ring-ring resize-none"
+            className="w-full text-base md:text-sm px-3 py-2 rounded-md bg-input border border-border focus:outline-none focus:ring-1 focus:ring-ring resize-none"
           />
         </div>
 
@@ -283,7 +283,7 @@ function SkillCard({
             onChange={(e) => onUpdate(skill.id, { action: e.target.value })}
             placeholder="例: 3秒間沈黙する"
             rows={2}
-            className="w-full text-sm px-3 py-2 rounded-md bg-input border border-border focus:outline-none focus:ring-1 focus:ring-ring resize-none"
+            className="w-full text-base md:text-sm px-3 py-2 rounded-md bg-input border border-border focus:outline-none focus:ring-1 focus:ring-ring resize-none"
           />
         </div>
 
