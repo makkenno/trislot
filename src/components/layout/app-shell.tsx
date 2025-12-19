@@ -1,5 +1,5 @@
+import { CheckCircle2, ListTodo, Zap } from "lucide-react";
 import type { ReactNode } from "react";
-import { Zap, ListTodo, CheckCircle2 } from "lucide-react";
 import { useSkillStore } from "../../stores/skill-store";
 
 interface AppShellProps {
@@ -11,7 +11,7 @@ export function AppShell({ children }: AppShellProps) {
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
-      <header className="border-b border-border p-4 bg-card">
+      <header className="border-b border-border p-2 md:p-4 bg-card">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
             <img src="/favicon.png?v=2" alt="Trislot" className="w-8 h-8" />
@@ -60,7 +60,7 @@ export function AppShell({ children }: AppShellProps) {
           </nav>
         </div>
       </header>
-      <main className="flex-1 max-w-4xl mx-auto w-full p-4 lg:p-8">
+      <main className="flex-1 max-w-4xl mx-auto w-full p-2 md:p-4 lg:p-8">
         {children}
       </main>
     </div>

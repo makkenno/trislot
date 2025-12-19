@@ -24,7 +24,7 @@ export function BacklogView() {
   const isMaxActive = activeSkills.length >= 3;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       <div className="space-y-2">
         <h2 className="text-2xl font-bold tracking-tight">
           やりたいことリスト
@@ -58,7 +58,7 @@ export function BacklogView() {
           backlog.map((item) => (
             <div
               key={item.id}
-              className="p-4 rounded-lg border border-border bg-card flex items-center justify-between group hover:border-sidebar-primary/50 transition-colors"
+              className="p-3 md:p-4 rounded-lg border border-border bg-card flex items-center justify-between group hover:border-sidebar-primary/50 transition-colors"
             >
               <span className="font-medium">{item.title}</span>
               <div className="flex items-center gap-2">

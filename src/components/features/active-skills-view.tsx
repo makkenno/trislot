@@ -1,8 +1,9 @@
-import { Archive, CheckCircle2, Trash2, Trophy } from "lucide-react";
+import { Archive, CheckCircle2, ThumbsUp, Trash2, Trophy } from "lucide-react";
 import { useState } from "react";
 import { useSkillStore } from "../../stores/skill-store";
 import type { ActiveSkill } from "../../types/skill";
 import { ConfirmDialog } from "../common/confirm-dialog";
+import { SkillHeatmap } from "./skill-heatmap";
 
 type Rank = "入門" | "初級" | "中級" | "上級" | "達人" | "伝説";
 
@@ -69,6 +70,7 @@ export function ActiveSkillsView() {
     moveToBacklog,
     moveToHistory,
     deleteActiveSkill,
+    logPractice,
   } = useSkillStore();
   const [confirmState, setConfirmState] = useState<{
     isOpen: boolean;
@@ -98,7 +100,7 @@ export function ActiveSkillsView() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       <div className="space-y-2">
         <h2 className="text-2xl font-bold tracking-tight">現在習得中</h2>
         <p className="text-muted-foreground">
@@ -106,7 +108,7 @@ export function ActiveSkillsView() {
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 md:gap-6 md:grid-cols-2 lg:grid-cols-3">
         {activeSkills.length === 0 ? (
           <div className="md:col-span-2 lg:col-span-3 text-center py-12 text-muted-foreground border-2 border-dashed border-muted rounded-lg">
             習得中のスキルはありません。やりたいことリストから選びましょう！
@@ -126,6 +128,7 @@ export function ActiveSkillsView() {
               onMaster={(id) =>
                 setConfirmState({ isOpen: true, itemId: id, type: "master" })
               }
+              onLogPractice={logPractice}
             />
           ))
         )}
@@ -168,6 +171,7 @@ interface SkillCardProps {
   onMoveToBacklog: (id: string) => void;
   onDelete: (id: string) => void;
   onMaster: (id: string) => void;
+  onLogPractice: (id: string) => void;
 }
 
 function SkillCard({
@@ -176,6 +180,7 @@ function SkillCard({
   onMoveToBacklog,
   onDelete,
   onMaster,
+  onLogPractice,
 }: SkillCardProps) {
   const rank = getRank(skill.proficiency);
   const styles = getRankStyles(rank);
@@ -218,7 +223,7 @@ function SkillCard({
     <div
       className={`rounded-xl border bg-card flex flex-col overflow-hidden transition-all duration-300 ${styles.border} ${styles.shadow}`}
     >
-      <div className="p-4 border-b border-border bg-muted/30">
+      <div className="p-3 md:p-4 border-b border-border bg-muted/30">
         <div className="flex items-start justify-between gap-2">
           <div className="space-y-1">
             <h3 className="font-semibold text-lg leading-tight">
@@ -251,8 +256,8 @@ function SkillCard({
           </div>
         </div>
       </div>
-
-      <div className="p-4 space-y-4 flex-1">
+      
+      <div className="p-3 md:p-4 space-y-4 flex-1">
         <div className="space-y-1.5">
           <label
             htmlFor={`context-${skill.id}`}
@@ -350,15 +355,29 @@ function SkillCard({
         </div>
       </div>
 
-      <div className="p-3 bg-muted/20 border-t border-border flex justify-end">
-        <button
-          type="button"
-          onClick={() => onMaster(skill.id)}
-          className="text-sm font-medium text-primary hover:underline flex items-center gap-1.5"
-        >
-          <CheckCircle2 className="w-4 h-4" />
-          習得完了
-        </button>
+      <div className="p-3 bg-muted/20 border-t border-border flex flex-wrap gap-y-3 gap-x-2 justify-between items-center">
+        <SkillHeatmap logs={skill.practiceLogs || []} />
+
+        <div className="flex flex-col items-end gap-2 ml-auto">
+          <button
+            type="button"
+            onClick={() => onLogPractice(skill.id)}
+            className="px-3 py-1.5 bg-primary text-primary-foreground text-xs font-bold rounded-full shadow-sm hover:bg-primary/90 transition-transform active:scale-95 flex items-center gap-1.5"
+            title="今日実践した！"
+          >
+            <ThumbsUp className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">今日やった！</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onMaster(skill.id)}
+            className="text-xs font-medium text-muted-foreground hover:text-primary hover:underline flex items-center gap-1"
+          >
+            <CheckCircle2 className="w-3.5 h-3.5" />
+            習得完了
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -18,6 +18,7 @@ interface SkillState {
   deleteBacklogItem: (id: string) => void;
   deleteActiveSkill: (id: string) => void;
   deleteHistoryItem: (id: string) => void;
+  logPractice: (id: string) => void;
 }
 
 export const useSkillStore = create<SkillState>()(
@@ -56,6 +57,7 @@ export const useSkillStore = create<SkillState>()(
           action: "",
           proficiency: 0,
           startedAt: Date.now(),
+          practiceLogs: [],
         };
 
         set((state) => ({
@@ -121,6 +123,19 @@ export const useSkillStore = create<SkillState>()(
       deleteHistoryItem: (id) => {
         set((state) => ({
           history: state.history.filter((i) => i.id !== id),
+        }));
+      },
+
+      logPractice: (id) => {
+        set((state) => ({
+          activeSkills: state.activeSkills.map((skill) =>
+            skill.id === id
+              ? {
+                  ...skill,
+                  practiceLogs: [...(skill.practiceLogs || []), Date.now()],
+                }
+              : skill,
+          ),
         }));
       },
     }),

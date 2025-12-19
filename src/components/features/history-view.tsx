@@ -15,7 +15,7 @@ export function HistoryView() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       <div className="space-y-2">
         <h2 className="text-2xl font-bold tracking-tight">習得済みリスト</h2>
         <p className="text-muted-foreground">
@@ -37,7 +37,7 @@ export function HistoryView() {
               <div className="absolute top-0 right-0 p-3 opacity-10 pointer-events-none">
                 <Trophy className="w-24 h-24 text-amber-500" />
               </div>
-              <div className="p-6 relative z-10">
+              <div className="p-4 md:p-6 relative z-10">
                 <h3 className="text-xl font-bold mb-2 flex items-center gap-2">
                   <Trophy className="w-5 h-5 text-amber-500" />
                   {item.title}
