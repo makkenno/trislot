@@ -12,6 +12,13 @@ export interface ActiveSkill {
   proficiency: number; // 0 to 100
   startedAt: number;
   practiceLogs: number[]; // timestamps
+  notes: SkillNote[];
+}
+
+export interface SkillNote {
+  id: string;
+  text: string;
+  createdAt: number;
 }
 
 export interface HistoryItem extends ActiveSkill {

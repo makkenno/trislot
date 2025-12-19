@@ -1,4 +1,4 @@
-import { Archive, CheckCircle2, ThumbsUp, Trash2, Trophy } from "lucide-react";
+import { Archive, CheckCircle2, ThumbsUp, Trash2, Trophy, NotebookPen } from "lucide-react";
 import { useState } from "react";
 import {
   triggerBigConfetti,
@@ -9,6 +9,7 @@ import { useSkillStore } from "../../stores/skill-store";
 import type { ActiveSkill } from "../../types/skill";
 import { ConfirmDialog } from "../common/confirm-dialog";
 import { SkillHeatmap } from "./skill-heatmap";
+import { SkillLogDialog } from "./skill-log-dialog";
 
 type Rank = "入門" | "初級" | "中級" | "上級" | "達人" | "伝説";
 
@@ -76,6 +77,8 @@ export function ActiveSkillsView() {
     moveToHistory,
     deleteActiveSkill,
     logPractice,
+    addNote,
+    deleteNote,
   } = useSkillStore();
   const [confirmState, setConfirmState] = useState<{
     isOpen: boolean;
@@ -85,6 +88,13 @@ export function ActiveSkillsView() {
     isOpen: false,
     itemId: null,
     type: null,
+  });
+  const [logDialogState, setLogDialogState] = useState<{
+    isOpen: boolean;
+    skillId: string | null;
+  }>({
+    isOpen: false,
+    skillId: null,
   });
 
   const handleConfirm = () => {
@@ -134,6 +144,9 @@ export function ActiveSkillsView() {
                 setConfirmState({ isOpen: true, itemId: id, type: "master" })
               }
               onLogPractice={logPractice}
+              onOpenLogs={(id) =>
+                setLogDialogState({ isOpen: true, skillId: id })
+              }
             />
           ))
         )}
@@ -166,6 +179,27 @@ export function ActiveSkillsView() {
         onConfirm={handleConfirm}
         onCancel={handleCancel}
       />
+
+      {logDialogState.skillId && (
+        <SkillLogDialog
+          isOpen={logDialogState.isOpen}
+          onClose={() => setLogDialogState({ isOpen: false, skillId: null })}
+          skillTitle={
+            activeSkills.find((s) => s.id === logDialogState.skillId)?.title ||
+            ""
+          }
+          notes={
+            activeSkills.find((s) => s.id === logDialogState.skillId)?.notes ||
+            []
+          }
+          onAddNote={(text) =>
+            logDialogState.skillId && addNote(logDialogState.skillId, text)
+          }
+          onDeleteNote={(noteId) =>
+             logDialogState.skillId && deleteNote(logDialogState.skillId, noteId)
+          }
+        />
+      )}
     </div>
   );
 }
@@ -177,6 +211,7 @@ interface SkillCardProps {
   onDelete: (id: string) => void;
   onMaster: (id: string) => void;
   onLogPractice: (id: string) => void;
+  onOpenLogs: (id: string) => void;
 }
 
 function SkillCard({
@@ -186,6 +221,7 @@ function SkillCard({
   onDelete,
   onMaster,
   onLogPractice,
+  onOpenLogs,
 }: SkillCardProps) {
   const rank = getRank(skill.proficiency);
   const styles = getRankStyles(rank);
@@ -388,15 +424,26 @@ function SkillCard({
         <SkillHeatmap logs={skill.practiceLogs || []} />
 
         <div className="flex flex-col items-end gap-2 ml-auto">
-          <button
-            type="button"
-            onClick={handleLogPractice}
-            className="px-3 py-1.5 bg-primary text-primary-foreground text-xs font-bold rounded-full shadow-sm hover:bg-primary/90 transition-transform active:scale-95 flex items-center gap-1.5"
-            title="今日実践した！"
-          >
-            <ThumbsUp className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">今日やった！</span>
-          </button>
+          <div className="flex gap-2">
+            <button
+               type="button"
+               onClick={() => onOpenLogs(skill.id)}
+               className="px-3 py-1.5 bg-secondary text-secondary-foreground text-xs font-bold rounded-full shadow-sm hover:bg-secondary/90 transition-transform active:scale-95 flex items-center gap-1.5"
+               title="実践ログ（メモ）"
+             >
+              <NotebookPen className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">ログ</span>
+            </button>
+            <button
+              type="button"
+              onClick={handleLogPractice}
+              className="px-3 py-1.5 bg-primary text-primary-foreground text-xs font-bold rounded-full shadow-sm hover:bg-primary/90 transition-transform active:scale-95 flex items-center gap-1.5"
+              title="今日実践した！"
+            >
+              <ThumbsUp className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">今日やった！</span>
+            </button>
+          </div>
 
           <button
             type="button"

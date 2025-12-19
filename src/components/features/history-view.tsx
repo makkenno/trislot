@@ -64,6 +64,14 @@ export function HistoryView() {
                     <p>{item.action}</p>
                   </div>
                 )}
+                {item.notes && item.notes.length > 0 && (
+                  <div className="mt-2 p-3 bg-background/50 rounded-lg text-sm">
+                    <p className="font-semibold text-xs text-muted-foreground mb-1">
+                      実践ログ
+                    </p>
+                    <p>{item.notes.length} 件のメモがあります</p>
+                  </div>
+                )}
               </div>
               <div className="p-3 bg-amber-500/10 border-t border-amber-500/20 flex justify-end">
                 <button

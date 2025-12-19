@@ -19,6 +19,8 @@ interface SkillState {
   deleteActiveSkill: (id: string) => void;
   deleteHistoryItem: (id: string) => void;
   logPractice: (id: string) => void;
+  addNote: (skillId: string, text: string) => void;
+  deleteNote: (skillId: string, noteId: string) => void;
 }
 
 export const useSkillStore = create<SkillState>()(
@@ -58,6 +60,7 @@ export const useSkillStore = create<SkillState>()(
           proficiency: 0,
           startedAt: Date.now(),
           practiceLogs: [],
+          notes: [],
         };
 
         set((state) => ({
@@ -133,6 +136,35 @@ export const useSkillStore = create<SkillState>()(
               ? {
                   ...skill,
                   practiceLogs: [...(skill.practiceLogs || []), Date.now()],
+                }
+              : skill,
+          ),
+        }));
+      },
+
+      addNote: (skillId, text) => {
+        set((state) => ({
+          activeSkills: state.activeSkills.map((skill) =>
+            skill.id === skillId
+              ? {
+                  ...skill,
+                  notes: [
+                    ...(skill.notes || []),
+                    { id: crypto.randomUUID(), text, createdAt: Date.now() },
+                  ],
+                }
+              : skill,
+          ),
+        }));
+      },
+
+      deleteNote: (skillId, noteId) => {
+        set((state) => ({
+          activeSkills: state.activeSkills.map((skill) =>
+            skill.id === skillId
+              ? {
+                  ...skill,
+                  notes: (skill.notes || []).filter((n) => n.id !== noteId),
                 }
               : skill,
           ),
