@@ -1,5 +1,10 @@
 import { Archive, CheckCircle2, ThumbsUp, Trash2, Trophy } from "lucide-react";
 import { useState } from "react";
+import {
+  triggerBigConfetti,
+  triggerSmallConfetti,
+} from "../../lib/confetti-utils";
+import { calculateStreak } from "../../lib/streak-utils";
 import { useSkillStore } from "../../stores/skill-store";
 import type { ActiveSkill } from "../../types/skill";
 import { ConfirmDialog } from "../common/confirm-dialog";
@@ -219,6 +224,30 @@ function SkillCard({
   const progressColor = getProgressColor(rank);
   const trackColor = getTrackColor(rank);
 
+  const handleLogPractice = (e: React.MouseEvent<HTMLButtonElement>) => {
+    // Get button position for confetti origin
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (rect.left + rect.width / 2) / window.innerWidth;
+    const y = (rect.top + rect.height / 2) / window.innerHeight;
+
+    // Trigger action
+    onLogPractice(skill.id);
+
+    // Immediate feedback
+    triggerSmallConfetti({ x, y });
+
+    // Check for milestones with optimistic update
+    const newLogs = [...(skill.practiceLogs || []), Date.now()];
+    const streak = calculateStreak(newLogs);
+
+    // Celebrate streaks (3 days, 7 days, etc.)
+    if (streak > 0 && (streak % 7 === 0 || streak === 3)) {
+      setTimeout(() => {
+        triggerBigConfetti();
+      }, 300);
+    }
+  };
+
   return (
     <div
       className={`rounded-xl border bg-card flex flex-col overflow-hidden transition-all duration-300 ${styles.border} ${styles.shadow}`}
@@ -256,7 +285,7 @@ function SkillCard({
           </div>
         </div>
       </div>
-      
+
       <div className="p-3 md:p-4 space-y-4 flex-1">
         <div className="space-y-1.5">
           <label
@@ -361,7 +390,7 @@ function SkillCard({
         <div className="flex flex-col items-end gap-2 ml-auto">
           <button
             type="button"
-            onClick={() => onLogPractice(skill.id)}
+            onClick={handleLogPractice}
             className="px-3 py-1.5 bg-primary text-primary-foreground text-xs font-bold rounded-full shadow-sm hover:bg-primary/90 transition-transform active:scale-95 flex items-center gap-1.5"
             title="今日実践した！"
           >

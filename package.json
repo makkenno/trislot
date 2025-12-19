@@ -16,6 +16,7 @@
     "@tailwindcss/vite": "^4.1.17",
     "@types/dagre": "^0.7.53",
     "@xstate/react": "^6.0.0",
+    "canvas-confetti": "^1.9.4",
     "clsx": "^2.1.1",
     "dagre": "^0.8.5",
     "highlight.js": "^11.11.1",
@@ -42,6 +43,7 @@
   "devDependencies": {
     "@biomejs/biome": "2.3.6",
     "@ls-lint/ls-lint": "2.3.1",
+    "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^24.10.0",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
