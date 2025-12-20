@@ -1,9 +1,17 @@
-import { Archive, CheckCircle2, ThumbsUp, Trash2, Trophy, NotebookPen } from "lucide-react";
+import {
+  Archive,
+  CheckCircle2,
+  NotebookPen,
+  ThumbsUp,
+  Trash2,
+  Trophy,
+} from "lucide-react";
 import { useState } from "react";
 import {
   triggerBigConfetti,
   triggerPhasedConfetti,
 } from "../../lib/confetti-utils";
+import { calculateXP, getLevelInfo } from "../../lib/level-utils";
 import { calculateStreak } from "../../lib/streak-utils";
 import { useSkillStore } from "../../stores/skill-store";
 import type { ActiveSkill } from "../../types/skill";
@@ -196,7 +204,7 @@ export function ActiveSkillsView() {
             logDialogState.skillId && addNote(logDialogState.skillId, text)
           }
           onDeleteNote={(noteId) =>
-             logDialogState.skillId && deleteNote(logDialogState.skillId, noteId)
+            logDialogState.skillId && deleteNote(logDialogState.skillId, noteId)
           }
         />
       )}
@@ -260,6 +268,9 @@ function SkillCard({
   const progressColor = getProgressColor(rank);
   const trackColor = getTrackColor(rank);
 
+  const totalXP = calculateXP(skill.practiceLogs || []);
+  const levelInfo = getLevelInfo(totalXP);
+
   const handleLogPractice = (e: React.MouseEvent<HTMLButtonElement>) => {
     // Get button position for confetti origin
     const rect = e.currentTarget.getBoundingClientRect();
@@ -272,9 +283,10 @@ function SkillCard({
     // Calculate today's practice count (optimistic)
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const todayLogs = (skill.practiceLogs || [])
-      .filter((log) => log >= today.getTime());
-    
+    const todayLogs = (skill.practiceLogs || []).filter(
+      (log) => log >= today.getTime(),
+    );
+
     // Add 1 for the current session (optimistic)
     const currentCount = todayLogs.length + 1;
 
@@ -427,6 +439,29 @@ function SkillCard({
             <span>100: 無意識でできる</span>
           </div>
         </div>
+
+        {/* Level & XP Bar */}
+        <div className="space-y-1">
+          <div className="flex justify-between items-end">
+            <div className="flex items-center gap-1.5">
+               <span className="text-sm font-bold text-muted-foreground">Lv.</span>
+               <span className="text-lg font-black text-foreground">{levelInfo.level}</span>
+            </div>
+            <span className="text-[10px] text-muted-foreground">
+              Exp. {Math.floor(levelInfo.currentLevelXP)} /{" "}
+              {Math.floor(levelInfo.nextLevelXP)}
+            </span>
+          </div>
+          <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+            <div
+              className="h-full rounded-full transition-all duration-500"
+              style={{
+                width: `${levelInfo.progress * 100}%`,
+                backgroundColor: progressColor, // Recycle the rank color for consistency
+              }}
+            />
+          </div>
+        </div>
       </div>
 
       <div className="p-3 bg-muted/20 border-t border-border flex flex-wrap gap-y-3 gap-x-2 justify-between items-center">
@@ -435,11 +470,11 @@ function SkillCard({
         <div className="flex flex-col items-end gap-2 ml-auto">
           <div className="flex gap-2">
             <button
-               type="button"
-               onClick={() => onOpenLogs(skill.id)}
-               className="px-3 py-1.5 bg-secondary text-secondary-foreground text-xs font-bold rounded-full shadow-sm hover:bg-secondary/90 transition-transform active:scale-95 flex items-center gap-1.5"
-               title="実践ログ（メモ）"
-             >
+              type="button"
+              onClick={() => onOpenLogs(skill.id)}
+              className="px-3 py-1.5 bg-secondary text-secondary-foreground text-xs font-bold rounded-full shadow-sm hover:bg-secondary/90 transition-transform active:scale-95 flex items-center gap-1.5"
+              title="実践ログ（メモ）"
+            >
               <NotebookPen className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">ログ</span>
             </button>

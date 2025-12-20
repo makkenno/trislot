@@ -33,6 +33,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
         <div className="flex items-center justify-between p-4 border-b border-border">
           <h2 className="text-lg font-semibold">{title}</h2>
           <button
+            type="button"
             onClick={onClose}
             className="p-1 hover:bg-muted rounded-full transition-colors"
           >

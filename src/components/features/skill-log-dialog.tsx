@@ -1,7 +1,7 @@
-import { Trash2, Send } from "lucide-react";
+import { Send, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { Modal } from "../common/modal";
 import type { SkillNote } from "../../types/skill";
+import { Modal } from "../common/modal";
 
 interface SkillLogDialogProps {
   isOpen: boolean;
@@ -54,6 +54,7 @@ export function SkillLogDialog({
                 <div className="flex justify-between items-center text-xs text-muted-foreground border-t border-border/50 pt-2">
                   <span>{new Date(note.createdAt).toLocaleString()}</span>
                   <button
+                    type="button"
                     onClick={() => onDeleteNote(note.id)}
                     className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-md transition-colors opacity-0 group-hover:opacity-100"
                     title="削除"

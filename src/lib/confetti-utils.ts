@@ -54,7 +54,7 @@ export function triggerStreakConfetti() {
 
 export function triggerPhasedConfetti(
   count: number,
-  origin?: { x: number; y: number }
+  origin?: { x: number; y: number },
 ) {
   // Base config
   const defaultOrigin = origin || { y: 0.6 };
