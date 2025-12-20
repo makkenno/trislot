@@ -437,11 +437,11 @@ function SkillCard({
             <button
               type="button"
               onClick={handleLogPractice}
-              className="px-3 py-1.5 bg-primary text-primary-foreground text-xs font-bold rounded-full shadow-sm hover:bg-primary/90 transition-transform active:scale-95 flex items-center gap-1.5"
+              className="px-4 py-2 bg-primary text-primary-foreground text-sm font-bold rounded-full shadow-sm hover:bg-primary/90 transition-transform active:scale-95 flex items-center gap-1.5"
               title="今日実践した！"
             >
-              <ThumbsUp className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">今日やった！</span>
+              <ThumbsUp className="w-4 h-4" />
+              <span>今日やった！</span>
             </button>
           </div>
 
