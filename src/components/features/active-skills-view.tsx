@@ -2,7 +2,7 @@ import { Archive, CheckCircle2, ThumbsUp, Trash2, Trophy, NotebookPen } from "lu
 import { useState } from "react";
 import {
   triggerBigConfetti,
-  triggerSmallConfetti,
+  triggerPhasedConfetti,
 } from "../../lib/confetti-utils";
 import { calculateStreak } from "../../lib/streak-utils";
 import { useSkillStore } from "../../stores/skill-store";
@@ -269,8 +269,17 @@ function SkillCard({
     // Trigger action
     onLogPractice(skill.id);
 
-    // Immediate feedback
-    triggerSmallConfetti({ x, y });
+    // Calculate today's practice count (optimistic)
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const todayLogs = (skill.practiceLogs || [])
+      .filter((log) => log >= today.getTime());
+    
+    // Add 1 for the current session (optimistic)
+    const currentCount = todayLogs.length + 1;
+
+    // Immediate feedback with dynamic intensity
+    triggerPhasedConfetti(currentCount, { x, y });
 
     // Check for milestones with optimistic update
     const newLogs = [...(skill.practiceLogs || []), Date.now()];
