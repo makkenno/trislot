@@ -52,47 +52,23 @@ export interface LevelInfo {
  * Level = Sqrt(Total XP / 50)
  */
 export function getLevelInfo(totalXP: number): LevelInfo {
-  // Formula: Total XP = 100 * (Level^2)
-  // Level = Sqrt(XP / 100)
-  // Example:
-  // 100 XP -> Lv 1 (Sqrt(1) = 1)
-  // 400 XP -> Lv 2 (Sqrt(4) = 2)
-  // 900 XP -> Lv 3 (Sqrt(9) = 3)
-  // 10000 XP -> Lv 10
+  // Formula: Total XP = 5 * (Level-1)^2
+  // Reverse: Level = Floor(Sqrt(TotalXP / 5)) + 1
+  //
+  // New Thresholds (approx):
+  // Lv 1: 0
+  // Lv 2: 5 (1 practice!)
+  // Lv 3: 20 (2 practices)
+  // Lv 4: 45
+  // Lv 5: 80
+  // Lv 10: 405
+  
+  const CONSTANT = 5;
 
-  // Base Level calculation
-  // We want Level 1 to start at 0 XP.
-  // Let's say:
-  // Lv 1: 0 - 100 XP (Next Level at 100)
-  // Lv 2: 100 - 400 XP (Next Level at 400)
+  const level = Math.floor(Math.sqrt(totalXP / CONSTANT)) + 1;
 
-  let level = Math.floor(Math.sqrt(totalXP / 100));
-  // If XP < 100, level is 0. But we want to start at Level 1.
-  level = Math.max(1, level);
-
-  // Calculate boundaries for current level
-  // The threshold to reach THIS level (Lv L) was 100 * L^2 ? No..
-
-  // Let's redefine:
-  // XP required to reach Level L+1 from 0 is: 100 * L^2
-  // So if I have 150 XP:
-  // 100 * 1^2 = 100 (Reached Lv 2)
-  // 100 * 2^2 = 400 (Need 400 for Lv 3)
-  // So I am Level 2.
-
-  // Re-evaluating:
-  // Sqrt(150 / 100) = Sqrt(1.5) = 1.22 -> Floor = 1.
-  // If result is 1, it means I have passed the threshold for Level 1? No..
-
-  // Let's treat formula as: XP Threshold for Level N = 100 * (N-1)^2
-  // Lv 1 starts at 0. (100 * 0^2 = 0)
-  // Lv 2 starts at 100. (100 * 1^2 = 100)
-  // Lv 3 starts at 400. (100 * 2^2 = 400)
-
-  level = Math.floor(Math.sqrt(totalXP / 100)) + 1;
-
-  const startXP = 100 * (level - 1) ** 2;
-  const nextXPThreshold = 100 * level ** 2;
+  const startXP = CONSTANT * (level - 1) ** 2;
+  const nextXPThreshold = CONSTANT * level ** 2;
 
   const currentLevelXP = totalXP - startXP;
   const nextLevelXP = nextXPThreshold - startXP;
