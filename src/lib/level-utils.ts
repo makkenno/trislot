@@ -52,23 +52,23 @@ export interface LevelInfo {
  * Level = Sqrt(Total XP / 50)
  */
 export function getLevelInfo(totalXP: number): LevelInfo {
-  // Formula: Total XP = 5 * (Level-1)^2
-  // Reverse: Level = Floor(Sqrt(TotalXP / 5)) + 1
+  // Formula: Total XP = 15 * (Level - 1)
+  // Reverse: Level = Floor(TotalXP / 15) + 1
   //
-  // New Thresholds (approx):
+  // New Thresholds (Linear Growth):
   // Lv 1: 0
-  // Lv 2: 5 (1 practice!)
-  // Lv 3: 20 (2 practices)
-  // Lv 4: 45
-  // Lv 5: 80
-  // Lv 10: 405
+  // Lv 2: 15  (+15)
+  // Lv 3: 30  (+15)
+  // Lv 4: 45  (+15)
+  // Lv 5: 60  (+15)
+  // Lv 10: 135
   
-  const CONSTANT = 5;
+  const CONSTANT = 15;
 
-  const level = Math.floor(Math.sqrt(totalXP / CONSTANT)) + 1;
+  const level = Math.floor(totalXP / CONSTANT) + 1;
 
-  const startXP = CONSTANT * (level - 1) ** 2;
-  const nextXPThreshold = CONSTANT * level ** 2;
+  const startXP = CONSTANT * (level - 1);
+  const nextXPThreshold = CONSTANT * level;
 
   const currentLevelXP = totalXP - startXP;
   const nextLevelXP = nextXPThreshold - startXP;
