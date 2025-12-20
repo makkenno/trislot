@@ -91,8 +91,8 @@ export function triggerPhasedConfetti(
     colors = ["#dc2626", "#ef4444", "#f87171", "#db2777", "#f472b6"];
   }
 
-  // 5% chance for special "Gold" confetti
-  const isSpecial = Math.random() < 0.05;
+  // 20% chance for special "Gold" confetti
+  const isSpecial = Math.random() < 0.2;
 
   if (isSpecial) {
     // Special Gold Effect
