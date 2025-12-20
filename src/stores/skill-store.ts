@@ -44,8 +44,8 @@ export const useSkillStore = create<SkillState>()(
 
       moveToActive: (itemId) => {
         const { backlog, activeSkills } = get();
-        if (activeSkills.length >= 3) {
-          console.warn("Cannot have more than 3 active skills.");
+        if (activeSkills.length >= 9) {
+          console.warn("Cannot have more than 9 active skills.");
           return;
         }
 

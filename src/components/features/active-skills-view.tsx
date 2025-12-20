@@ -127,7 +127,7 @@ export function ActiveSkillsView() {
       <div className="space-y-2">
         <h2 className="text-2xl font-bold tracking-tight">現在習得中</h2>
         <p className="text-muted-foreground">
-          意識して実践するスキルです。確実に習得するために最大3つまでに絞っています。
+          意識して実践するスキルです。確実に習得するために最大9つまでに絞っています。
         </p>
       </div>
 
