@@ -21,7 +21,7 @@ export function BacklogView() {
     setNewItemTitle("");
   };
 
-  const isMaxActive = activeSkills.length >= 3;
+  const isMaxActive = activeSkills.length >= 9;
 
   return (
     <div className="space-y-4 md:space-y-6">
