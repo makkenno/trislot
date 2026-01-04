@@ -6,7 +6,7 @@ import {
   Trash2,
   Trophy,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   triggerBigConfetti,
   triggerPhasedConfetti,
@@ -105,6 +105,38 @@ export function ActiveSkillsView() {
     skillId: null,
   });
 
+  const sortedSkills = useMemo(() => {
+    const now = new Date();
+    // Use local time for "Start of Today"
+    const todayStart = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+    ).getTime();
+
+    return [...activeSkills].sort((a, b) => {
+      const isAPracticed = (a.practiceLogs || []).some(
+        (log) => log >= todayStart,
+      );
+      const isBPracticed = (b.practiceLogs || []).some(
+        (log) => log >= todayStart,
+      );
+
+      if (isAPracticed !== isBPracticed) {
+        return isAPracticed ? 1 : -1;
+      }
+
+      const levelA = getLevelInfo(calculateXP(a.practiceLogs || [])).level;
+      const levelB = getLevelInfo(calculateXP(b.practiceLogs || [])).level;
+
+      if (levelA !== levelB) {
+        return levelA - levelB;
+      }
+
+      return 0;
+    });
+  }, [activeSkills]);
+
   const handleConfirm = () => {
     if (confirmState.itemId && confirmState.type) {
       if (confirmState.type === "delete") {
@@ -137,7 +169,7 @@ export function ActiveSkillsView() {
             習得中のスキルはありません。やりたいことリストから選びましょう！
           </div>
         ) : (
-          activeSkills.map((skill) => (
+          sortedSkills.map((skill) => (
             <SkillCard
               key={skill.id}
               skill={skill}
